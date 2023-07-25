@@ -34,15 +34,6 @@ class App extends Component {
     this.setState({ filter: event.target.value });
   };
 
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
-
   removeContact = contactId => {
     this.setState(prevState => {
       return {
@@ -52,8 +43,11 @@ class App extends Component {
   };
 
   render() {
-    const visibleContacts = this.getVisibleContacts();
-    const { filter } = this.state;
+    const { filter, contacts } = this.state;
+    const hasContacts = contacts.length > 0;
+    const visibleContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
 
     return (
       <Container>
@@ -62,12 +56,12 @@ class App extends Component {
         <ContactForm onSubmit={this.addContact} />
 
         <SubTitle>Contacts</SubTitle>
-        {this.state.contacts.length > 0 ? (
+        {hasContacts ? (
           <Filter value={filter} onChangeFilter={this.changeFilter} />
         ) : (
           <Wrapper>Your phonebook is empty. Add first contact!</Wrapper>
         )}
-        {this.state.contacts.length > 0 && (
+        {hasContacts && (
           <ContactList
             contacts={visibleContacts}
             onRemoveContact={this.removeContact}
